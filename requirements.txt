@@ -5,3 +5,5 @@ lightgbm
 scikit-learn
 joblib
 ta
+requests
+ccxt
