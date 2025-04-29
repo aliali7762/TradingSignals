@@ -1,6 +1,7 @@
 import os
 import subprocess
 import time
+import requests  # للتعامل مع API
 from flask import Flask, jsonify
 import pandas as pd
 import numpy as np
@@ -13,7 +14,7 @@ from joblib import dump, load
 import ta
 
 # Automatically install required libraries
-required_libraries = ["ccxt", "pandas", "numpy", "flask", "lightgbm", "scikit-learn", "joblib", "ta"]
+required_libraries = ["ccxt", "pandas", "numpy", "flask", "lightgbm", "scikit-learn", "joblib", "ta", "requests"]
 for lib in required_libraries:
     try:
         __import__(lib)
@@ -23,22 +24,27 @@ for lib in required_libraries:
 # Initialize Flask
 app = Flask(__name__)
 
+# API Key for accessing market data
+API_KEY = "VV8KSR86EAL4ES2C"
+
 # Analysis settings
 ASSETS = ["EUR/USD", "GBP/USD", "USD/JPY"]  # Monitored assets
 TIMEFRAME = "1m"  # Timeframe
 
-# Generate sample data (replace with real data fetching)
+# Generate sample data using real API
 def generate_sample_data():
-    np.random.seed(42)
-    data = {
-        "timestamp": pd.date_range(start="2023-01-01", periods=500, freq="T"),
-        "open": np.random.rand(500),
-        "high": np.random.rand(500),
-        "low": np.random.rand(500),
-        "close": np.random.rand(500),
-        "volume": np.random.randint(100, 1000, size=500),
-    }
-    return pd.DataFrame(data)
+    url = "https://api.example.com/marketdata"  # ضع رابط الـ API الحقيقي هنا
+    headers = {"Authorization": f"Bearer {API_KEY}"}
+    params = {"assets": ",".join(ASSETS), "timeframe": TIMEFRAME}
+
+    response = requests.get(url, headers=headers, params=params)
+    if response.status_code == 200:
+        data = response.json()
+        df = pd.DataFrame(data)
+        return df
+    else:
+        print(f"Failed to fetch data: {response.status_code}, {response.text}")
+        return pd.DataFrame()  # Return empty DataFrame on failure
 
 # Calculate technical indicators
 def calculate_indicators(df):
