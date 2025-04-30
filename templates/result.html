@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Analysis Result</title>
+</head>
+<body>
+  <h1>Analysis Result</h1>
+  {% if filename %}
+    <div>
+      <h2>Uploaded Chart:</h2>
+      <img src="{{ url_for('static', filename='uploads/' + filename) }}" alt="Uploaded Chart" style="max-width: 600px;">
+    </div>
+    <div>
+      <h2>Detected Objects/Patterns:</h2>
+      {% if detected_labels %}
+        <ul>
+        {% for label in detected_labels %}
+          <li>{{ label }}</li>
+        {% endfor %}
+        </ul>
+      {% else %}
+        <p>No objects or patterns detected by the model.</p>
+      {% endif %}
+    </div>
+    <div>
+      <h2>Extracted Text (OCR):</h2>
+      <pre>{{ ocr_text }}</pre>
+    </div>
+    <div>
+      <h2>Trend Analysis:</h2>
+      <p>{{ trend }}</p>
+    </div>
+  {% else %}
+    <p>No image uploaded.</p>
+  {% endif %}
+  <a href="/">Analyze Another Image</a>
+</body>
+</html>
